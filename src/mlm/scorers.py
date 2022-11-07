@@ -751,10 +751,19 @@ class MLMScorerPT(BaseScorer):
                     # Because we only need one scalar
                     out = out.log_softmax(dim=-1)
 
+                    # DEBUG
+                    print(f"split size:{split_size}")
+                    print(f"out size: {out.size()}")
+                    print(f"out: {out}")
+                    print(f"out[list(range(10))]: {out[list(range(10))]}")
+
                     # Get the probability computed for the correct token
                     # Save the scores at the masked indices
                     batch_sent_idxs_per_ctx[ctx_idx].append(sent_idxs)
-                    out = out[list(range(split_size)), token_masked_ids]
+                    if out.dim()==2:
+                        out = out[list(range(split_size)), token_masked_ids]
+                    elif out.dim()==1:
+                        out = out[token_masked_ids]
                     batch_scores_per_ctx[ctx_idx].append(out)
                     batch_masked_positions_per_ctx[ctx_idx].append(masked_positions)
 
