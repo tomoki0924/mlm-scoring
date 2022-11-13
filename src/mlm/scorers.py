@@ -162,9 +162,9 @@ Model '{model.__class__.__name__}' is not supported by the scorer '{self.__class
             return scores.tolist(), true_tok_lens
 
 
-    def score_sentences(self, sentences: List[str], **kwargs) -> float:
+    def score_sentences(self, sentences: List[str], **kwargs) -> Tuple[List[float],List[int]]:
         corpus = Corpus.from_text(sentences)
-        return self.score(corpus, **kwargs)[0]
+        return self.score(corpus, **kwargs)
 
 
 class LMScorer(BaseScorer):
