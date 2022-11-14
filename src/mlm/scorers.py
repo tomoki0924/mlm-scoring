@@ -755,7 +755,7 @@ class MLMScorerPT(BaseScorer):
                     print(f"split size:{split_size}")
                     print(f"out size: {out.size()}")
                     print(f"out: {out}")
-                    print(f"out[list(range(10))]: {out[list(range(10))]}")
+                    #print(f"out[list(range(10))]: {out[list(range(10))]}")
 
                     # Get the probability computed for the correct token
                     # Save the scores at the masked indices
