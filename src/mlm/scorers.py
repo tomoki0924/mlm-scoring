@@ -564,7 +564,7 @@ class MLMScorerPT(BaseScorer):
         # TODO: This does not restrict to specific GPUs however, use CUDA_VISIBLE_DEVICES?
         # TODO: It also unnecessarily locks the GPUs to each other
         self._model.to(self._device)
-        self._model = torch.nn.DataParallel(self._model, device_ids=[0])
+        # self._model = torch.nn.DataParallel(self._model, device_ids=[0])
         self._model.eval()
 
 
@@ -760,10 +760,13 @@ class MLMScorerPT(BaseScorer):
                     # Get the probability computed for the correct token
                     # Save the scores at the masked indices
                     batch_sent_idxs_per_ctx[ctx_idx].append(sent_idxs)
-                    if out.dim()==2:
-                        out = out[list(range(split_size)), token_masked_ids]
-                    elif out.dim()==1:
-                        out = out[token_masked_ids]
+                    #if out.dim()==2:
+                    #    out = out[list(range(split_size)), token_masked_ids]
+                    #elif out.dim()==1:
+                    #    out = out[token_masked_ids]
+                    if out.dim()==1:
+                        out = torch.unsqueeze(out, dim=0)
+                    out = out[list(range(split_size)), token_masked_ids]
                     batch_scores_per_ctx[ctx_idx].append(out)
                     batch_masked_positions_per_ctx[ctx_idx].append(masked_positions)
 
