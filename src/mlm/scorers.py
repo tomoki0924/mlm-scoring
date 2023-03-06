@@ -716,16 +716,16 @@ class MLMScorerPT(BaseScorer):
 
                     split_size = token_ids.shape[0]
 
-                    if isinstance(self._model.module, AlbertForMaskedLMOptimized) or \
-                        isinstance(self._model.module, BertForMaskedLMOptimized) or \
-                        isinstance(self._model.module, DistilBertForMaskedLMOptimized):
+                    if isinstance(self._model, AlbertForMaskedLMOptimized) or \
+                        isinstance(self._model, BertForMaskedLMOptimized) or \
+                        isinstance(self._model, DistilBertForMaskedLMOptimized):
                         # Because BERT does not take a length parameter
                         alen = torch.arange(token_ids.shape[1], dtype=torch.long)
                         alen = alen.to(ctx)
                         mask = alen < valid_length[:, None]
                         out = self._model(input_ids=token_ids, attention_mask=mask, select_positions=masked_positions)
                         out = out[0].squeeze()
-                    elif isinstance(self._model.module, transformers.BertForMaskedLM):
+                    elif isinstance(self._model, transformers.BertForMaskedLM):
                         # Because BERT does not take a length parameter
                         alen = torch.arange(token_ids.shape[1], dtype=torch.long)
                         alen = alen.to(ctx)
@@ -734,7 +734,7 @@ class MLMScorerPT(BaseScorer):
                         # out[0] is what contains the distribution for the masked (batch_size, sequence_length, config.vocab_size)
                         # Reindex to only get the distributions at the masked positions (batch_size, config.vocab_size)
                         out = out[0][list(range(split_size)),masked_positions.reshape(-1),:]
-                    elif isinstance(self._model.module, transformers.XLMWithLMHeadModel):
+                    elif isinstance(self._model, transformers.XLMWithLMHeadModel):
                         if self._lang is not None and self._tokenizer.lang2id is not None:
                             langs = torch.ones_like(token_ids)*self._tokenizer.lang2id[self._lang]
                         else:
